@@ -1,0 +1,333 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Primary — Green scale (from your brand) ─────────── */
+  --color-primary-50: #eef7f1;
+  --color-primary-100: #d7ebde;
+  --color-primary-200: #b0d8bd;
+  --color-primary-300: #7dbf94;
+  --color-primary-400: #4fa172;
+  --color-primary-500: #2d8653;
+  --color-primary-600: #1e6b3a;
+  --color-primary-700: #16552e;
+  --color-primary-800: #114027;
+  --color-primary-900: #0d2f1d;
+  --color-primary-950: #061a10;
+
+  /* ─── Primary shorthand (used in components) ──────────── */
+  --color-primary: #1e6b3a;
+  --color-primary-dark: #16552e;
+  --color-primary-light: #2d8653;
+
+  /* ─── Accent — Amber ──────────────────────────────────── */
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
+  --color-accent-light: #fbbf24;
+
+  /* ─── Neutral scale ───────────────────────────────────── */
+  --color-ink: #1a1f1c;
+  --color-slate: #5a6b5f;
+  --color-mist: #f5f8f5;
+
+  /* ─── Surfaces ────────────────────────────────────────── */
+  --color-canvas: #fafcf9;
+  --color-canvas-alt: #f3f8f4;
+  --color-canvas-deep: #e8efe9;
+  --color-surface: #ffffff;
+  --color-border: #e3ebe4;
+
+  /* ─── Status ──────────────────────────────────────────── */
+  --color-success: #10b981;
+  --color-danger: #e11d48;
+  --color-warning: #f59e0b;
+  --color-info: #0284c7;
+
+  /* ─── Radius ──────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* ─── Shadows ─────────────────────────────────────────── */
+  --shadow-soft:
+    0 1px 3px rgba(20, 40, 25, 0.04), 0 1px 2px rgba(20, 40, 25, 0.03);
+  --shadow-card:
+    0 4px 12px rgba(20, 40, 25, 0.06), 0 2px 4px rgba(20, 40, 25, 0.04);
+  --shadow-lift:
+    0 12px 32px rgba(20, 40, 25, 0.1), 0 4px 8px rgba(20, 40, 25, 0.05);
+
+  /* ─── Fonts ───────────────────────────────────────────── */
+  --font-sans: "Cairo", "Inter", system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Backgrounds */
+  --bg: #fafcf9;
+  --surface: #ffffff;
+  --surface-2: #f3f8f4;
+
+  /* Text */
+  --text: #1a1f1c;
+  --text-muted: #5a6b5f;
+
+  /* Border */
+  --border: #e3ebe4;
+
+  /* Status */
+  --danger: #e11d48;
+  --danger-tint: rgba(225, 29, 72, 0.08);
+  --danger-strong: #be123c;
+
+  --success: #10b981;
+  --success-tint: rgba(16, 185, 129, 0.1);
+  --success-strong: #059669;
+
+  --warning: #f59e0b;
+  --warning-tint: rgba(245, 158, 11, 0.1);
+
+  --info: #0284c7;
+  --info-tint: rgba(2, 132, 199, 0.1);
+
+  /* Primary tints */
+  --primary-tint: rgba(30, 107, 58, 0.08);
+  --primary-tint-strong: rgba(30, 107, 58, 0.15);
+  --primary-border: rgba(30, 107, 58, 0.18);
+
+  /* Accent tints */
+  --accent-tint: rgba(245, 158, 11, 0.1);
+
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK THEME — Deep forest, rich not flat
+   ═══════════════════════════════════════════════════════════ */
+.dark {
+  --bg: #0a1410;
+  --surface: #111d17;
+  --surface-2: #182a1f;
+
+  --text: #e8f0ea;
+  --text-muted: #94a89b;
+
+  --border: #24382b;
+
+  --danger: #fb7185;
+  --danger-tint: rgba(251, 113, 133, 0.12);
+  --danger-strong: #f43f5e;
+
+  --success: #34d399;
+  --success-tint: rgba(52, 211, 153, 0.12);
+  --success-strong: #10b981;
+
+  --warning: #fbbf24;
+  --warning-tint: rgba(251, 191, 36, 0.12);
+
+  --info: #38bdf8;
+  --info-tint: rgba(56, 189, 248, 0.12);
+
+  --primary-tint: rgba(79, 161, 114, 0.12);
+  --primary-tint-strong: rgba(79, 161, 114, 0.2);
+  --primary-border: rgba(79, 161, 114, 0.25);
+
+  --accent-tint: rgba(251, 191, 36, 0.12);
+
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Base
+   ═══════════════════════════════════════════════════════════ */
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─── Selection ────────────────────────────────────────────── */
+::selection {
+  background: var(--primary-tint-strong);
+  color: var(--text);
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── RTL ──────────────────────────────────────────────────── */
+[dir="rtl"] .flip-x {
+  transform: scaleX(-1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════════════════════ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-spin-slow {
+  animation: spin 1s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Reusable components
+   ═══════════════════════════════════════════════════════════ */
+@layer components {
+  .btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 200ms ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  .eyebrow-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: var(--primary-tint);
+    border: 1px solid var(--primary-border);
+    color: var(--color-primary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Focus ring موحد */
+  .focus-ring {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-tint-strong);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Utilities
+   ═══════════════════════════════════════════════════════════ */
+@layer utilities {
+  /* Backgrounds */
+  .bg-blueprint {
+    background-image:
+      radial-gradient(rgba(30, 107, 58, 0.08) 1px, transparent 1px),
+      linear-gradient(to right, rgba(26, 31, 28, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(26, 31, 28, 0.025) 1px, transparent 1px);
+    background-size:
+      22px 22px,
+      88px 88px,
+      88px 88px;
+  }
+
+  .bg-grid-dots {
+    background-image: radial-gradient(
+      rgba(20, 90, 66, 0.08) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  .bg-primary-tint {
+    background-color: var(--primary-tint);
+  }
+  .bg-primary-tint-strong {
+    background-color: var(--primary-tint-strong);
+  }
+  .bg-accent-tint {
+    background-color: var(--accent-tint);
+  }
+
+  .border-primary-tint {
+    border-color: var(--primary-border);
+  }
+
+  /* Gradient text — للعناوين المميزة */
+  .text-gradient-primary {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-primary-light) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Glass — للـ header */
+  .glass {
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ring رقيق للـ cards */
+  .ring-tint {
+    box-shadow: 0 0 0 1px var(--primary-border);
+  }
+}
