@@ -4,20 +4,15 @@
 // ─────────────────────────────────────────────────────────────
 
 const getApiUrl = (): string => {
-  // 1. Env var wins (set in Vercel / .env.local)
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL;
   }
-
-  // 2. Localhost auto-detect
   if (typeof window !== "undefined") {
     const hostname = window.location.hostname;
     if (hostname === "localhost" || hostname === "127.0.0.1") {
       return "http://localhost:3000/api";
     }
   }
-
-  // 3. Production fallback
   return "https://mothaqaf-backend.vercel.app/api";
 };
 

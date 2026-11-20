@@ -17,12 +17,12 @@ export default function DashboardLayout({
     <AuthGuard>
       <ToastProvider>
         <div className="min-h-screen flex bg-(--bg)">
-          {/* Desktop Sidebar */}
+          {/* Desktop sidebar */}
           <div className="hidden lg:block">
             <Sidebar />
           </div>
 
-          {/* Mobile Sidebar */}
+          {/* Mobile sidebar */}
           {mobileOpen && (
             <>
               <div

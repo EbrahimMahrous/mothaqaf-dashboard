@@ -8,6 +8,7 @@ import {
   Image as ImageIcon,
   FileText,
   Mail,
+  User,
   Settings as SettingsIcon,
 } from "lucide-react";
 import { useI18n } from "@/components/providers/I18nProvider";
@@ -18,6 +19,7 @@ const navItems = [
   { href: "/hero", key: "hero", Icon: ImageIcon },
   { href: "/files", key: "files", Icon: FileText },
   { href: "/newsletter", key: "newsletter", Icon: Mail },
+  { href: "/profile", key: "profile", Icon: User },
   { href: "/settings", key: "settings", Icon: SettingsIcon },
 ] as const;
 
@@ -34,10 +36,10 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
           className="flex items-center gap-3 group"
           onClick={onClose}
         >
-          <div className="w-11 h-11 rounded-md bg-(--primary-tint) flex items-center justify-center overflow-hidden ring-1 ring-(--primary-border) group-hover:ring-(--color-primary) transition">
+          <div className="w-11 h-11 rounded-md bg-(--color-primary-tint) flex items-center justify-center overflow-hidden ring-1 ring-(--border) group-hover:ring-(--color-primary) transition">
             <Image
               src="/mothaqaf-logo.png"
-              alt="مثقف"
+              alt={t.common.appName}
               width={44}
               height={44}
               className="object-contain"
@@ -64,15 +66,12 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
               href={href}
               onClick={onClose}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-150 group relative",
+                "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition group",
                 active
-                  ? "bg-(--color-primary) text-white shadow-md"
-                  : "text-(--text) hover:bg-(--primary-tint) hover:text-(--color-primary)",
+                  ? "bg-(--color-primary) text-white shadow-sm"
+                  : "text-(--text) hover:bg-(--color-primary-tint) hover:text-(--color-primary)",
               )}
             >
-              {active && (
-                <span className="absolute -inset-s-3 top-1/2 -translate-y-1/2 w-1 h-6 rounded-e-full bg-(--color-accent)" />
-              )}
               <Icon
                 className={cn(
                   "w-5 h-5 shrink-0 transition",
@@ -82,6 +81,9 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
                 )}
               />
               <span>{t.nav[key]}</span>
+              {active && (
+                <span className="ms-auto w-1.5 h-1.5 rounded-full bg-white" />
+              )}
             </Link>
           );
         })}
