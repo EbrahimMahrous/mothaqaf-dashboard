@@ -1,4 +1,27 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+// ─────────────────────────────────────────────────────────────
+// API URL — picks the right base URL per environment
+// Priority: NEXT_PUBLIC_API_URL (Vercel) > auto-detect > fallback
+// ─────────────────────────────────────────────────────────────
+
+const getApiUrl = (): string => {
+  // 1. Env var wins (set in Vercel / .env.local)
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  // 2. Localhost auto-detect
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return "http://localhost:3000/api";
+    }
+  }
+
+  // 3. Production fallback
+  return "https://mothaqaf-backend.vercel.app/api";
+};
+
+const API_URL = getApiUrl();
 
 export class ApiError extends Error {
   status: number;
@@ -104,3 +127,5 @@ export const revalidateWebsite = async (
     console.warn("[revalidateWebsite] Network error:", err);
   }
 };
+
+export { API_URL };
