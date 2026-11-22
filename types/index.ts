@@ -22,8 +22,19 @@ export interface DownloadFile {
   publicId: string;
   size: number;
   format: string;
+  mimeType?: string;
   downloads: number;
+  views: number;
+  category: "management" | "career" | "business" | "decision" | "other";
+  tags: string[];
+  coverImage?: string;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  isPublished?: boolean;
+  order?: number;
   createdAt: string;
+  updatedAt?: string;
+  videoUrl?: string;
 }
 
 export interface Subscriber {

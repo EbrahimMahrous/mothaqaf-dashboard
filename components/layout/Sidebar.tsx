@@ -8,6 +8,7 @@ import {
   Image as ImageIcon,
   FileText,
   Mail,
+  MessageSquare,
   User,
   Settings as SettingsIcon,
 } from "lucide-react";
@@ -19,6 +20,7 @@ const navItems = [
   { href: "/hero", key: "hero", Icon: ImageIcon },
   { href: "/files", key: "files", Icon: FileText },
   { href: "/newsletter", key: "newsletter", Icon: Mail },
+  { href: "/messages", key: "messages", Icon: MessageSquare },
   { href: "/profile", key: "profile", Icon: User },
   { href: "/settings", key: "settings", Icon: SettingsIcon },
 ] as const;

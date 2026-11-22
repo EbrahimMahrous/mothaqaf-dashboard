@@ -122,5 +122,75 @@ export const revalidateWebsite = async (
     console.warn("[revalidateWebsite] Network error:", err);
   }
 };
+// ─────────────────────────────────────────────────────────────
+// Files stats helpers
+// ─────────────────────────────────────────────────────────────
+
+export interface FilesStats {
+  totalFiles: number;
+  totalDownloads: number;
+  totalViews: number;
+  totalSize: number;
+  byCategory: Record<string, number>;
+  topFiles: {
+    _id: string;
+    title: string;
+    downloads: number;
+    views: number;
+    format: string;
+    size: number;
+    category: string;
+  }[];
+}
+
+export const fetchFilesStats = () =>
+  api.get<{ data: FilesStats }>("/files/stats");
 
 export { API_URL };
+// ─────────────────────────────────────────────────────────────
+// Contact messages helpers
+// ─────────────────────────────────────────────────────────────
+
+export type ContactStatus = "new" | "read" | "replied" | "archived";
+
+export interface ContactMessage {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  status: ContactStatus;
+  ipAddress?: string;
+  userAgent?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContactListResponse {
+  success: boolean;
+  count: number;
+  total: number;
+  page: number;
+  pages: number;
+  data: ContactMessage[];
+}
+
+export const fetchContactMessages = (params?: {
+  status?: ContactStatus | "all";
+  page?: number;
+  limit?: number;
+}) => {
+  const search = new URLSearchParams();
+  if (params?.status && params.status !== "all") {
+    search.set("status", params.status);
+  }
+  if (params?.page) search.set("page", String(params.page));
+  if (params?.limit) search.set("limit", String(params.limit));
+
+  const qs = search.toString();
+  return api.get<ContactListResponse>(`/contact${qs ? `?${qs}` : ""}`);
+};
+
+export const updateContactStatus = (id: string, status: ContactStatus) =>
+  api.patch<{ success: boolean; data: ContactMessage }>(`/contact/${id}`, {
+    status,
+  });
