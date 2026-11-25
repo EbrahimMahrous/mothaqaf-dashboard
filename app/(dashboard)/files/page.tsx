@@ -18,6 +18,7 @@ import {
   Sparkles,
   Image as ImageIcon,
   Video,
+  X,
 } from "lucide-react";
 import { api, fetchFilesStats, type FilesStats } from "@/lib/api";
 import { useI18n } from "@/components/providers/I18nProvider";
@@ -88,6 +89,12 @@ export default function FilesPage() {
   const [editIsFeatured, setEditIsFeatured] = useState(false);
   const [editIsPublished, setEditIsPublished] = useState(true);
 
+  // ── Cover upload state ─────────────────────────────────
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
   // ── Debounce search ────────────────────────────────────
   useEffect(() => {
     const id = setTimeout(() => setDebouncedQ(q), 350);
@@ -128,6 +135,56 @@ export default function FilesPage() {
   useEffect(() => {
     loadStats();
   }, []);
+
+  // ── Cover uploader ─────────────────────────────────────
+  const uploadCover = async (fileId: string, file: File) => {
+    setUploadingCover(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await api.post<{ data: DownloadFile }>(
+        `/files/${fileId}/cover`,
+        fd,
+      );
+      showToast(t.files.coverUploaded);
+
+      // Update local list so the grid reflects immediately
+      setFiles((prev) =>
+        prev.map((f) =>
+          f._id === fileId ? { ...f, coverImage: res.data.coverImage } : f,
+        ),
+      );
+
+      // Update the open Edit modal state too
+      setEditCover(res.data.coverImage || "");
+
+      // Clear preview state
+      setCoverFile(null);
+      setCoverPreview(null);
+      if (coverInputRef.current) coverInputRef.current.value = "";
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t.common.error, "error");
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
+  const handleCoverSelect = (file: File | null) => {
+    setCoverFile(file);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setCoverPreview(url);
+      if (showEdit?._id) uploadCover(showEdit._id, file);
+    } else {
+      setCoverPreview(null);
+    }
+  };
+
+  const clearCover = () => {
+    setCoverFile(null);
+    setCoverPreview(null);
+    if (coverInputRef.current) coverInputRef.current.value = "";
+  };
 
   // ── Actions ────────────────────────────────────────────
   const upload = async () => {
@@ -191,7 +248,7 @@ export default function FilesPage() {
         description: editDescription,
         category: editCategory,
         tags: editTags,
-        coverImage: editCover,
+        // coverImage is uploaded separately via /files/:id/cover
         videoUrl: editVideoUrl,
         isNew: String(editIsNew),
         isFeatured: String(editIsFeatured),
@@ -241,6 +298,11 @@ export default function FilesPage() {
     setEditIsNew(!!file.isNew);
     setEditIsFeatured(!!file.isFeatured);
     setEditIsPublished(file.isPublished !== false);
+
+    // Reset cover upload state
+    setCoverFile(null);
+    setCoverPreview(null);
+    if (coverInputRef.current) coverInputRef.current.value = "";
   };
 
   // ── Derived ────────────────────────────────────────────
@@ -489,7 +551,6 @@ export default function FilesPage() {
                       </span>
                     </div>
 
-                    {/* Video badge */}
                     {f.videoUrl && (
                       <div className="mt-2 inline-flex items-center gap-1 text-[11px] text-(--color-primary)">
                         <Video className="w-3 h-3" />
@@ -681,11 +742,20 @@ export default function FilesPage() {
       {/* ── Edit Modal ────────────────────────────────────── */}
       <Modal
         open={!!showEdit}
-        onClose={() => setShowEdit(null)}
+        onClose={() => {
+          setShowEdit(null);
+          clearCover();
+        }}
         title={t.files.edit}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setShowEdit(null)}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowEdit(null);
+                clearCover();
+              }}
+            >
               {t.common.cancel}
             </Button>
             <Button onClick={saveEdit}>{t.common.save}</Button>
@@ -725,11 +795,78 @@ export default function FilesPage() {
             value={editTags}
             onChange={(e) => setEditTags(e.target.value)}
           />
-          <Input
-            label={t.files.coverImage}
-            value={editCover}
-            onChange={(e) => setEditCover(e.target.value)}
-          />
+
+          {/* Cover image uploader (file from computer) */}
+          <div>
+            <label className="block text-sm font-medium text-(--text) mb-1.5">
+              {t.files.coverImage}
+            </label>
+            <p className="text-xs text-(--text-muted) mb-2">
+              {t.files.coverImageHint}
+            </p>
+
+            <div className="flex items-start gap-3">
+              {/* Preview */}
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-(--border) bg-(--surface-2)">
+                {coverPreview || editCover ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={coverPreview || editCover}
+                    alt="cover"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-(--text-muted)">
+                    <ImageIcon className="h-6 w-6" />
+                  </div>
+                )}
+
+                {(coverPreview || editCover) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearCover();
+                      setEditCover("");
+                    }}
+                    className="absolute top-1 inset-e-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                    aria-label={t.files.removeCover}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+
+              {/* File input */}
+              <div className="flex-1 space-y-2">
+                <input
+                  ref={coverInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0] || null;
+                    handleCoverSelect(f);
+                  }}
+                  className="w-full text-sm file:me-3 file:px-3 file:py-2 file:rounded-md file:border-0 file:bg-(--color-primary) file:text-white file:font-medium file:cursor-pointer"
+                />
+                {uploadingCover && (
+                  <p className="text-xs text-(--text-muted)">
+                    {t.files.uploadingCover}
+                  </p>
+                )}
+                {!uploadingCover && coverFile && (
+                  <p className="text-xs text-green-600">
+                    ✓ {t.files.coverUploaded}
+                  </p>
+                )}
+                {!showEdit?._id && (
+                  <p className="text-xs text-(--text-muted)">
+                    {t.files.saveFirst}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
           <Input
             label={t.files.videoUrl}
             value={editVideoUrl}
